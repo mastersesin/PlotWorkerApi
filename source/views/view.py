@@ -43,13 +43,18 @@ def get_credential():
 def post_credential():
     if request.is_json:
         json_credential_obj = request.json.get('json_credential')
+        is_exist = session.query(Credential).filter(
+            Credential.json_credential == json.dumps(json_credential_obj)).first()
         if json_credential_obj:
-            new_credential = Credential(
-                json_credential=json.dumps(json_credential_obj)
-            )
-            session.add(new_credential)
-            session.commit()
-            return {'code': 3221, 'message': 'hihi'}
+            if not is_exist:
+                new_credential = Credential(
+                    json_credential=json.dumps(json_credential_obj)
+                )
+                session.add(new_credential)
+                session.commit()
+                return {'code': 3221, 'message': 'hihi'}
+            else:
+                abort(400, 'Credential existed')
         else:
             abort(400, 'json_credential param not found')
     else:
