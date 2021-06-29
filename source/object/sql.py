@@ -30,6 +30,7 @@ class Log(Base):
     id = Column(Integer, primary_key=True)
     pem_name = Column(String, nullable=False)
     file_name = Column(String, nullable=False)
+    timestamp = Column(Integer)
 
     def __repr__(self):
         return '<Id: {}>'.format(self.id)

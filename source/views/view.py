@@ -69,7 +69,8 @@ def post_log():
         if pem_name and file_name:
             new_log = Log(
                 pem_name=pem_name,
-                file_name=file_name
+                file_name=file_name,
+                timestamp=int(time.time())
             )
             session.add(new_log)
             session.commit()
