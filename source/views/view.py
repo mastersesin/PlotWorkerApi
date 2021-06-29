@@ -14,7 +14,7 @@ def get_credential():
         Credential.used_times < 8,
     ).first()
     if cre_record:
-        cre_record.last_used_time = int(time.time())
+        cre_record.last_used_timestamp = int(time.time())
         cre_record.used_times += 1
         session.commit()
         return {'code': 3221, 'message': cre_record.to_json()}
