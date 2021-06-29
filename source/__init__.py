@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 app = Flask(__name__)
@@ -19,3 +18,4 @@ session = Session()
 session.commit()
 
 from source.views import view
+from source.tool import background
