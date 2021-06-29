@@ -23,3 +23,20 @@ class Credential(Base):
             'last_used_time': self.last_used_time,
             'used_times': self.used_times
         }
+
+
+class Log(Base):
+    __tablename__ = 'log'
+    id = Column(Integer, primary_key=True)
+    pem_name = Column(String, nullable=False)
+    file_name = Column(String, nullable=False)
+
+    def __repr__(self):
+        return '<Id: {}>'.format(self.id)
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'pem_name': self.pem_name,
+            'file_name': self.file_name
+        }

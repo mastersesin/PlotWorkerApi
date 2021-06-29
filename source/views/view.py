@@ -5,7 +5,7 @@ from flask import request, abort
 from sqlalchemy import and_
 
 from source import app, session
-from source.object.sql import Credential
+from source.object.sql import Credential, Log
 
 
 def restart_credential():
@@ -59,3 +59,32 @@ def post_credential():
             abort(400, 'json_credential param not found')
     else:
         abort(400)
+
+
+@app.route('/log', methods=['POST'])
+def post_log():
+    if request.is_json:
+        pem_name = request.json.get('pem_name')
+        file_name = request.json.get('file_name')
+        if pem_name and file_name:
+            new_log = Log(
+                pem_name=pem_name,
+                file_name=file_name
+            )
+            session.add(new_log)
+            session.commit()
+            return {'code': 3221, 'message': 'hihi'}
+        else:
+            abort(400, 'json_credential param not found')
+    else:
+        abort(400)
+
+
+@app.route('/log', methods=['GET'])
+def get_log():
+    pem_name = request.args.get('pem_name')
+    record = session.query(Log)
+    if pem_name:
+        record = record.filter(Log.pem_name == pem_name)
+    record = record.all()
+    return {'code': 3221, 'message': [x.to_json() for x in record]}
