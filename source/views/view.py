@@ -2,7 +2,7 @@ import json
 import time
 
 from flask import request, abort
-from sqlalchemy import and_
+from sqlalchemy import and_, desc
 
 from source import app, session
 from source.object.sql import Credential, Log
@@ -10,9 +10,8 @@ from source.object.sql import Credential, Log
 
 @app.route('/credential', methods=['GET'])
 def get_credential():
-    cre_record: Credential = session.query(Credential).filter(
-        Credential.used_times < 8,
-    ).first()
+    cre_record: Credential = session.query(Credential).filter(Credential.used_times < 8).order_by(
+        desc(Credential.last_used_timestamp)).first()
     if cre_record:
         cre_record.last_used_timestamp = int(time.time())
         cre_record.used_times += 1
