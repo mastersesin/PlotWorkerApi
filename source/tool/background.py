@@ -13,14 +13,12 @@ class BackgroundWorker(threading.Thread):
 
     @staticmethod
     def restart_credential():
-        print('Background refresh worker started.')
         cre_record = session.query(Credential).filter(
             and_(
                 Credential.used_times >= 8,
                 time.time() - Credential.last_used_timestamp > 24 * 60 * 60
             )
         ).all()
-        print(cre_record)
         for cre in cre_record:
             cre.last_used_time = 0
             cre.used_times = 0

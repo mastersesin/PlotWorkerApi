@@ -2,10 +2,19 @@ import json
 import time
 
 from flask import request, abort
-from sqlalchemy import and_, desc
+from sqlalchemy import and_, desc, func
 
 from source import app, session
 from source.object.sql import Credential, Log
+
+
+def convert_sort_to_json(obj):
+    print(obj)
+    return {
+        'ip': obj[0],
+        'total_uploaded_plot': obj[1],
+        'last_seen': '{} minutes'.format(int((time.time() - obj[2]) / 60))
+    }
 
 
 @app.route('/credential', methods=['GET'])
@@ -51,7 +60,7 @@ def post_log():
         ip = request.json.get('ip')
         file_name = request.json.get('file_name')
         email = request.json.get('email')
-        if ip and file_name:
+        if ip and file_name and email:
             new_log = Log(
                 ip=ip,
                 file_name=file_name,
@@ -70,8 +79,21 @@ def post_log():
 @app.route('/log', methods=['GET'])
 def get_log():
     pem_name = request.args.get('pem_name')
-    record = session.query(Log)
-    if pem_name:
-        record = record.filter(Log.pem_name == pem_name)
-    record = record.all()
-    return {'code': 3221, 'message': [x.to_json() for x in record]}
+    sort_type = request.args.get('sort_type')
+    if not sort_type:
+        record = session.query(Log)
+        if pem_name:
+            record = record.filter(Log.pem_name == pem_name)
+        record = record.order_by(Log.timestamp.desc()).limit(100).all()
+        return {'code': 3221, 'message': [x.to_json() for x in record]}
+    else:
+        if sort_type == 'group':
+            current_timestamp = int(time.time())
+            delta_utc_to_gmt7 = 7 * 60 * 60
+            today_start_timestamp = current_timestamp - current_timestamp % 86400 - delta_utc_to_gmt7
+            # record = session.query(Log.).filter(Log.timestamp >= today_start_timestamp).order_by(
+            #     Log.timestamp.desc()).group_by(Log.ip).all()
+            records = session.query(Log.ip, func.count(Log.ip), func.max(Log.timestamp)).filter(
+                Log.timestamp >= today_start_timestamp).group_by(
+                Log.ip).all()
+            return {'code': 3221, 'message': [convert_sort_to_json(x) for x in records]}
