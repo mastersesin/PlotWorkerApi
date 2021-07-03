@@ -19,7 +19,7 @@ def convert_sort_to_json(obj):
 
 @app.route('/credential', methods=['GET'])
 def get_credential():
-    is_check = request.json.get('is_check')
+    is_check = request.args.get('is_check')
     cre_record: Credential = session.query(Credential).filter(Credential.used_times < 8).order_by(
         desc(Credential.last_used_timestamp)).first()
     if cre_record:
