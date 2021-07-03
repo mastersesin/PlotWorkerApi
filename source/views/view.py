@@ -90,7 +90,7 @@ def get_log():
         if sort_type == 'group':
             current_timestamp = int(time.time())
             delta_utc_to_gmt7 = 7 * 60 * 60
-            today_start_timestamp = current_timestamp - current_timestamp % 86400 - delta_utc_to_gmt7
+            today_start_timestamp = current_timestamp - (current_timestamp + delta_utc_to_gmt7) % 86400
             # record = session.query(Log.).filter(Log.timestamp >= today_start_timestamp).order_by(
             #     Log.timestamp.desc()).group_by(Log.ip).all()
             records = session.query(Log.ip, func.count(Log.ip), func.max(Log.timestamp)).filter(
