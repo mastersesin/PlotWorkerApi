@@ -95,5 +95,13 @@ def get_log():
             #     Log.timestamp.desc()).group_by(Log.ip).all()
             records = session.query(Log.ip, func.count(Log.ip), func.max(Log.timestamp)).filter(
                 Log.timestamp >= today_start_timestamp).group_by(
-                Log.ip).all()
-            return {'code': 3221, 'message': [convert_sort_to_json(x) for x in records]}
+                Log.ip)
+            total_plot_posted = session.query(Log).filter(Log.timestamp >= today_start_timestamp).count()
+            return {
+                'code': 3221,
+                'message': {
+                    'total_plot': total_plot_posted,
+                    'total_ip': records.count(),
+                    'detail': [convert_sort_to_json(x) for x in records.all()]
+                }
+            }

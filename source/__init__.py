@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/test'
+app.config['JSON_SORT_KEYS'] = False
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=False)
 Base = declarative_base()
 from source.object import sql
