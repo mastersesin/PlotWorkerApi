@@ -20,16 +20,24 @@ def convert_sort_to_json(obj):
 @app.route('/credential', methods=['GET'])
 def get_credential():
     is_check = request.args.get('is_check')
-    cre_record: Credential = session.query(Credential).filter(Credential.used_times < 8).order_by(
-        desc(Credential.last_used_timestamp)).first()
-    if cre_record:
-        if not is_check:
-            cre_record.last_used_timestamp = int(time.time())
-            cre_record.used_times += 1
-            session.commit()
-        return {'code': 3221, 'message': cre_record.to_json()}
+    filter_type = request.args.get('filter_type')
+    if not filter_type:
+        cre_record: Credential = session.query(Credential).filter(Credential.used_times < 8).order_by(
+            desc(Credential.last_used_timestamp)).first()
+        if cre_record:
+            if not is_check:
+                cre_record.last_used_timestamp = int(time.time())
+                cre_record.used_times += 1
+                session.commit()
+            return {'code': 3221, 'message': cre_record.to_json()}
+        else:
+            abort(404)
     else:
-        abort(404)
+        cre_record: Credential = session.query(Credential).all()
+        if cre_record:
+            return {'code': 3221, 'message': [x.to_json() for x in cre_record]}
+        else:
+            abort(404)
 
 
 @app.route('/credential', methods=['POST'])
