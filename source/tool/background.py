@@ -27,7 +27,8 @@ class BackgroundWorker(threading.Thread):
     def run(self):
         while True:
             self.restart_credential()
-            time.sleep(3)
+            print('Background service start normally')
+            time.sleep(10 * 60)
 
 
 b_worker = BackgroundWorker()
