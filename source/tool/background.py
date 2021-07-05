@@ -16,7 +16,7 @@ class BackgroundWorker(threading.Thread):
         cre_record = session.query(Credential).filter(
             and_(
                 Credential.used_times >= 8,
-                time.time() - Credential.last_used_timestamp > 24 * 60 * 60
+                int(time.time()) - Credential.last_used_timestamp > 24 * 60 * 60
             )
         ).all()
         for cre in cre_record:
