@@ -17,8 +17,22 @@ def convert_sort_to_json(obj):
     }
 
 
+def restart_credential():
+    cre_record = session.query(Credential).filter(
+        and_(
+            Credential.used_times >= 8,
+            int(time.time()) - Credential.last_used_timestamp > 24 * 60 * 60
+        )
+    ).all()
+    for cre in cre_record:
+        cre.last_used_time = 0
+        cre.used_times = 0
+        session.commit()
+
+
 @app.route('/credential', methods=['GET'])
 def get_credential():
+    restart_credential()
     is_check = request.args.get('is_check')
     filter_type = request.args.get('filter_type')
     if not filter_type:
