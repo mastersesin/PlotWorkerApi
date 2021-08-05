@@ -62,13 +62,20 @@ def post_credential():
         if json_credential_obj and email:
             is_exist = session.query(Credential).filter(
                 Credential.json_credential == json.dumps(json_credential_obj)).first()
+            is_email_exist = session.query(Credential).filter(
+                Credential.json_credential == json.dumps(json_credential_obj)).first()
             if not is_exist:
-                new_credential = Credential(
-                    json_credential=json.dumps(json_credential_obj),
-                    email=email
-                )
-                session.add(new_credential)
-                session.commit()
+                if not is_email_exist:
+                    new_credential = Credential(
+                        json_credential=json.dumps(json_credential_obj),
+                        email=email
+                    )
+                    session.add(new_credential)
+                    session.commit()
+                else:
+                    cre_obj_contain_existed_email: Credential = is_email_exist
+                    cre_obj_contain_existed_email.json_credential = json_credential_obj
+                    session.commit()
                 return {'code': 3221, 'message': 'hihi'}
             else:
                 abort(400, 'Credential existed')
