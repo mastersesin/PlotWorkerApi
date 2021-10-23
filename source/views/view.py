@@ -1,6 +1,7 @@
 import json
 import time
 
+import sqlalchemy
 from flask import request, abort
 from sqlalchemy import and_, desc, func
 
@@ -68,12 +69,15 @@ def post_credential():
             is_exist = session.query(Credential).filter(
                 Credential.json_credential == json.dumps(json_credential_obj)).first()
             if not is_exist:
-                new_credential = Credential(
-                    json_credential=json.dumps(json_credential_obj),
-                    drive=drive
-                )
-                session.add(new_credential)
-                session.commit()
+                try:
+                    new_credential = Credential(
+                        json_credential=json.dumps(json_credential_obj),
+                        drive=drive
+                    )
+                    session.add(new_credential)
+                    session.commit()
+                except sqlalchemy.exc.PendingRollbackError:
+                    session.rollback()
                 return {'code': 3221, 'message': 'hihi'}
             else:
                 abort(400, 'Credential existed')
