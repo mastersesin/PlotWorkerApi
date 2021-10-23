@@ -8,7 +8,7 @@ class Credential(Base):
     __tablename__ = 'credential'
     id = Column(Integer, primary_key=True)
     json_credential = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    drive = Column(String, nullable=False)
     last_used_timestamp = Column(Integer, default=0)
     used_times = Column(Integer, default=0)
 
@@ -18,8 +18,8 @@ class Credential(Base):
     def to_json(self):
         return {
             'id': self.id,
+            'drive': self.drive,
             'json_credential': json.loads(self.json_credential),
-            'email': self.email,
             'last_used_time': self.last_used_timestamp,
             'used_times': self.used_times
         }
@@ -30,7 +30,6 @@ class Log(Base):
     id = Column(Integer, primary_key=True)
     ip = Column(String, nullable=False)
     file_name = Column(String, nullable=False)
-    email = Column(String, nullable=False)
     timestamp = Column(Integer)
 
     def __repr__(self):
@@ -41,6 +40,5 @@ class Log(Base):
             'id': self.id,
             'ip': self.ip,
             'file_name': self.file_name,
-            'email': self.email,
             'timestamp': self.timestamp
         }

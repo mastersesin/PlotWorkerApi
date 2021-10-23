@@ -19,4 +19,3 @@ session = Session()
 session.commit()
 
 from source.views import view
-from source.tool import background
