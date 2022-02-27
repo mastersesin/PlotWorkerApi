@@ -18,4 +18,4 @@ Session.configure(bind=engine)
 session = Session()
 session.commit()
 
-from source.views import view
+from source.view import view

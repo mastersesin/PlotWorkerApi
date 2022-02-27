@@ -21,7 +21,7 @@ def convert_sort_to_json(obj):
 def restart_credential():
     cre_record = session.query(Credential).filter(
         and_(
-            Credential.used_times >= 8,
+            Credential.used_times >= 1,
             int(time.time()) - Credential.last_used_timestamp > 24 * 60 * 60
         )
     ).all()
@@ -40,7 +40,7 @@ def get_credential():
     if drive:
         if not filter_type:
             cre_record: Credential = session.query(Credential).filter(
-                and_(Credential.used_times < 8, Credential.drive == drive)).order_by(
+                and_(Credential.used_times < 1, Credential.drive == drive)).order_by(
                 desc(Credential.last_used_timestamp)).first()
             if cre_record:
                 if not is_check:
