@@ -6,9 +6,9 @@ from sqlalchemy.ext.declarative import declarative_base
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/test'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['JSON_SORT_KEYS'] = False
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=False)
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=False, connect_args={'check_same_thread': False})
 Base = declarative_base()
 from source.object import sql
 

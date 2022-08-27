@@ -36,43 +36,37 @@ def get_credential():
     restart_credential()
     is_check = request.args.get('is_check')
     filter_type = request.args.get('filter_type')
-    drive = request.args.get('drive')
-    if drive:
-        if not filter_type:
-            cre_record: Credential = session.query(Credential).filter(
-                and_(Credential.used_times < 1, Credential.drive == drive)).order_by(
-                desc(Credential.last_used_timestamp)).first()
-            if cre_record:
-                if not is_check:
-                    cre_record.last_used_timestamp = int(time.time())
-                    cre_record.used_times += 1
-                    session.commit()
-                return {'code': 3221, 'message': cre_record.to_json()}
-            else:
-                abort(404)
+    if not filter_type:
+        cre_record: Credential = session.query(Credential).filter(
+            and_(Credential.used_times <= 6)).order_by(
+            desc(Credential.last_used_timestamp)).first()
+        if cre_record:
+            if not is_check:
+                cre_record.last_used_timestamp = int(time.time())
+                cre_record.used_times += 1
+                session.commit()
+            return {'code': 3221, 'message': cre_record.to_json()}
         else:
-            cre_record: Credential = session.query(Credential).all()
-            if cre_record:
-                return {'code': 3221, 'message': [x.to_json() for x in cre_record]}
-            else:
-                abort(404)
+            abort(404)
     else:
-        abort(400, 'Not specified drive id')
+        cre_record: Credential = session.query(Credential).all()
+        if cre_record:
+            return {'code': 3221, 'message': [x.to_json() for x in cre_record]}
+        else:
+            abort(404)
 
 
 @app.route('/credential', methods=['POST'])
 def post_credential():
     if request.is_json:
         json_credential_obj = request.json.get('json_credential')
-        drive = request.json.get('drive')
-        if json_credential_obj and drive:
+        if json_credential_obj:
             is_exist = session.query(Credential).filter(
                 Credential.json_credential == json.dumps(json_credential_obj)).first()
             if not is_exist:
                 try:
                     new_credential = Credential(
-                        json_credential=json.dumps(json_credential_obj),
-                        drive=drive
+                        json_credential=json.dumps(json_credential_obj)
                     )
                     session.add(new_credential)
                     session.commit()
