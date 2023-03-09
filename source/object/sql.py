@@ -19,7 +19,9 @@ class Credential(Base):
     def to_json(self):
         return {
             'id': self.id,
-            'json_credential': json.loads(self.json_credential),
+            'rclone_token': json.loads(self.rclone_token),
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
             'last_used_time': self.last_used_timestamp,
             'used_times': self.used_times
         }
