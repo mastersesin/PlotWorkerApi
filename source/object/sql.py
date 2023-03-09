@@ -7,7 +7,9 @@ import json
 class Credential(Base):
     __tablename__ = 'credential'
     id = Column(Integer, primary_key=True)
-    json_credential = Column(String, nullable=False)
+    rclone_token = Column(String, nullable=False)
+    client_id = Column(String, nullable=False)
+    client_secret = Column(String, nullable=False)
     last_used_timestamp = Column(Integer, default=0)
     used_times = Column(Integer, default=0)
 
