@@ -36,8 +36,8 @@ ada.haskins121@flychia.com	{"access_token":"ya29.a0Aa4xrXNzmNphsBqE8Ae02EbxzA3FS
 scott.ross270@flychia.com	{"access_token":"ya29.a0Aa4xrXPDxt7DJ6bAisMTvjDC4EKEXKfe5gydmEm6M40WP2PqbpIjUmQ27Qw5hW5FsW_eZrrbgZWlN8Vu3j6QannKoTTvFUvZ1jFOVl_r6iPje-m6ScjE6T2irhfNHAka3MJ6sZJexFMXCXqMRlNqnNWj9md3aCgYKATASARMSFQEjDvL9KDsadDTQU8o79ZNHSa1SvA0163","token_type":"Bearer","refresh_token":"1//0eS-vVGF8Zq9ACgYIARAAGA4SNwF-L9Ir76HNm1QsTTQ4oPQojWZo2RHd6LmN0JDQJ99W7PK2m9Bw1cYW6TIsneExL55s5J6Wge0","expiry":"2022-10-05T17:17:48.458763+07:00"}	{"access_token": "ya29.a0Aa4xrXMhmrQHKQdJIOYI5rE9vq7SCJwuADr6qzCFA1pP6KCPdubGRN0w1vJEAZAo3ahfEIOvB8LUozFDCEceyn6clfFDe1xEVaW7GOPsx4JwExVFT1UYRFfwNjPinrS39NebWGiwW4llyTdMv3iAc4lBhSpQaCgYKAZ8SARASFQEjDvL9LOXophQ0wGPBT9QsKmfATQ0163", "token_type": "Bearer", "refresh_token": "1//04ZBNik6fAM8VCgYIARAAGAQSNwF-L9IrzZnM4HyYFDItqq2wxJSfI1psyGtm2j6qBSSAmugmm2tm0NiSXH1qqtm9VsHAqxGrWcA", "expiry": "2022-11-03T04:51:19.648669Z"}	772708495104-bpk3qhaa5or455ru9p6jt0fiq3fna7lt.apps.googleusercontent.com	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
 """
 
-# url = 'http://185.237.253.47:5003/credential'
-url = 'http://localhost:5000/credential'
+url = 'http://34.172.87.215:5000/credential'
+# url = 'http://localhost:5000/credential'
 
 for i in a.split('\n'):
     if not i:

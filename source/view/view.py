@@ -23,7 +23,7 @@ def restart_credential():
         int(time.time()) - Credential.last_used_timestamp > 24 * 60 * 60
     ).all()
     for cre in cre_record:
-        # cre.last_used_time = 0
+        cre.last_used_timestamp = time.time()
         cre.total_bytes_used = 0.0
         cre.is_abuse_reported = False
         session.commit()
