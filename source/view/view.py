@@ -20,15 +20,29 @@ def convert_sort_to_json(obj):
 
 def restart_credential():
     cre_record = session.query(Credential).filter(
-        and_(
-            Credential.used_times >= 1,
-            int(time.time()) - Credential.last_used_timestamp > 24 * 60 * 60
-        )
+        int(time.time()) - Credential.last_used_timestamp > 24 * 60 * 60
     ).all()
     for cre in cre_record:
-        cre.last_used_time = 0
-        cre.used_times = 0
+        # cre.last_used_time = 0
+        cre.total_bytes_used = 0.0
+        cre.is_abuse_reported = False
         session.commit()
+
+
+@app.route('/credential', methods=['PUT'])
+def abuse_report():
+    credential_id = request.json.get('credential_id')
+    if credential_id:
+        abused_credential_obj: Credential = session.query(Credential).filter(
+            Credential.id == credential_id
+        ).first()
+        if abused_credential_obj:
+            abused_credential_obj.is_abuse_reported = True
+            abused_credential_obj.last_used_timestamp = int(time.time())
+            session.commit()
+            return {'code': 3221, 'message': 'Ok'}
+        abort(400, f"ID {credential_id} not found")
+    abort(400, "credential_id not found")
 
 
 @app.route('/credential', methods=['GET'])
@@ -36,18 +50,24 @@ def get_credential():
     restart_credential()
     is_check = request.args.get('is_check')
     filter_type = request.args.get('filter_type')
+    total_upload_gb = request.args.get('total_upload_gb')
     if not filter_type:
-        cre_record: Credential = session.query(Credential).filter(
-            and_(Credential.used_times <= 6)).order_by(
-            desc(Credential.last_used_timestamp)).first()
-        if cre_record:
-            if not is_check:
-                cre_record.last_used_timestamp = int(time.time())
-                cre_record.used_times += 1
-                session.commit()
-            return {'code': 3221, 'message': cre_record.to_json()}
-        else:
-            abort(404)
+        if total_upload_gb:
+            cre_record: Credential = session.query(Credential).filter(
+                and_(
+                    Credential.total_bytes_used < 700.0,
+                    Credential.is_abuse_reported == 0
+                )).order_by(Credential.last_used_timestamp).first()
+            if cre_record:
+                if not is_check:
+                    cre_record.total_bytes_used += float(total_upload_gb)
+                    if cre_record.total_bytes_used >= 700:
+                        cre_record.last_used_timestamp = int(time.time())
+                    session.commit()
+                return {'code': 3221, 'message': cre_record.to_json()}
+            else:
+                abort(404)
+        abort(404, 'Please tell use how many byte you will use by param total_upload_gb')
     else:
         cre_record: Credential = session.query(Credential).all()
         if cre_record:
