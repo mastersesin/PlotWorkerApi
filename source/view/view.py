@@ -79,18 +79,14 @@ def get_credential():
 @app.route('/credential', methods=['POST'])
 def post_credential():
     if request.is_json:
-        rclone_token = request.json.get('rclone_token')
-        client_id = request.json.get('client_id')
-        client_secret = request.json.get('client_secret')
-        if rclone_token:
+        sa_json_string = request.json.get('sa_json_string')
+        if sa_json_string:
             is_exist = session.query(Credential).filter(
-                Credential.rclone_token == json.dumps(rclone_token)).first()
+                Credential.sa_json_string == json.dumps(sa_json_string)).first()
             if not is_exist:
                 try:
                     new_credential = Credential(
-                        rclone_token=json.dumps(rclone_token),
-                        client_id=client_id,
-                        client_secret=client_secret
+                        sa_json_string=json.dumps(sa_json_string),
                     )
                     session.add(new_credential)
                     session.commit()
