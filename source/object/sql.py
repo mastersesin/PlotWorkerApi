@@ -43,6 +43,7 @@ class Log(Base):
     id = Column(Integer, primary_key=True)
     ip = Column(String, nullable=False)
     file_name = Column(String, nullable=False)
+    project_name = Column(String, nullable=False)
     timestamp = Column(Integer)
 
     def __repr__(self):
@@ -53,5 +54,6 @@ class Log(Base):
             'id': self.id,
             'ip': self.ip,
             'file_name': self.file_name,
+            'project_name': self.project_name,
             'timestamp': self.timestamp
         }
