@@ -105,7 +105,7 @@ def post_credential():
 def post_log():
     if request.is_json:
         file_name = request.json.get('file_name')
-        project_name = request.json.get('project_name')
+        project_name = request.json.get('project')
         if file_name:
             new_log = Log(
                 ip=request.remote_addr,
