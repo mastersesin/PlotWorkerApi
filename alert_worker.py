@@ -31,6 +31,7 @@ def test():
         except Exception as err:
             params = {'chat_id': group_id, 'text': err}
             requests.post(url, params=params)
+            time.sleep(60)
 
 
 threading.Thread(target=test).start()
