@@ -15,12 +15,13 @@ def test():
         resp = requests.get('http://35.238.217.175:5000/log?sort_type=group')
         json_data = resp.json()
         list_worker = json_data.get('message').get('detail')
+        text = '--Start check\n'
         for worker in list_worker:
             last_seen = int(worker['last_seen'].split()[0])
             if last_seen > 20:
-                params = {'chat_id': group_id, 'text': f'<{worker["ip"]}> has down'}
-                requests.post(url, params=params)
-        params = {'chat_id': group_id, 'text': f'--Check at {datetime.datetime.now()}'}
+                text += f'<{worker["ip"]}> has down\n'
+        text += f'--End check at {datetime.datetime.now()}'
+        params = {'chat_id': group_id, 'text': text}
         requests.post(url, params=params)
         time.sleep(30 * 60)
 
